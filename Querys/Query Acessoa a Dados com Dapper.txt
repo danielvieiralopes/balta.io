@@ -84,3 +84,14 @@
 		
 		CONSTRAINT PK_PostTag PRIMARY KEY([PostId], [TagId])
 	)
+	
+	INSERT INTO 
+		[User]
+	VALUES (
+		'André Baltieri',
+		'andre@balta.io',
+		'HASH',
+		'8x Microsoft MVP',
+		'https://',
+		'andre-baltieri'
+	)

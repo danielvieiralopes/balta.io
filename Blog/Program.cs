@@ -1,5 +1,6 @@
 ﻿using System;
 using Blog.Models;
+using Blog.Repositories;
 using Dapper.Contrib.Extensions;
 using Microsoft.Data.SqlClient;
 
@@ -11,80 +12,26 @@ namespace Blog
 
         static void Main(string[] args)
         {
-            // ReadUsers();
+            var connection = new SqlConnection(CONNECTION_STRING);
+            connection.Open();
+
+            ReadUsers(connection);
             // ReadUser();
             // CreateUser();
             // UpdateUser();
-            DeleteUser();
+            // DeleteUser();
+            connection.Close();
         }
 
-        public static void ReadUsers()
+        public static void ReadUsers(SqlConnection connection)
         {
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                var users = connection.GetAll<User>();
+            var repository = new UserRepository(connection);
+            var users = repository.Get(CONNECTION_STRING);
 
-                foreach (var user in users)
-                {
-                    Console.WriteLine(user.Name);
-                }
-            }
-        }
-         public static void ReadUser()
-        {
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                var user = connection.Get<User>(1);
+            foreach (var user in users)
                 Console.WriteLine(user.Name);
-            }
+            
         }
-
-         public static void CreateUser()
-        {
-            var user = new User()
-            {
-                Bio = "Equipe balta.io",
-                Email = "hello@balta.io",
-                Image = "https://..",
-                Name = "Equipe balta.io",    
-                PasswordHash="HASH",
-                Slug="equipe-balta"
-            };
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                connection.Insert<User>(user);
-                Console.WriteLine("Cadastro realizado com sucesso");
-            }
-        }
-
-         public static void UpdateUser()
-        {
-            var user = new User()
-            {
-                Id=2,
-                Bio = "Equipe | balta.io",
-                Email = "hello@balta.io",
-                Image = "https://..",
-                Name = "Equipe de suporte balta.io",    
-                PasswordHash="HASH",
-                Slug="equipe-balta"
-            };
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                connection.Update<User>(user);
-                Console.WriteLine("Atualização realizada com sucesso");
-            }
-        }
-
-         public static void DeleteUser()
-        {
-           
-            using (var connection = new SqlConnection(CONNECTION_STRING))
-            {
-                var user = connection.Get<User>(2);
-                connection.Delete<User>(user);
-                Console.WriteLine("Registro excluído com sucesso");
-            }
-        }
+        
     }
 }
